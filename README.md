@@ -5,4 +5,5 @@ This repository documents an academic Robotics Project, part of the Industrial R
 This project's goal is to make a UR5 robot play the keyboards.
 
 Group: Andressa Silva de Oliveira, Gabriella Kowarick Zullo, Guilherme Ricchetti Carvalho, Lucas Gabriel Mocellin Teixeira
+
 November 2023
