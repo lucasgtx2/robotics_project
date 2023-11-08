@@ -25,14 +25,14 @@ class PianoApp:
             if nota == "NADA":
                 tecla = tk.Button(self.root, text=nota, command=lambda nota=nota: self.adicionar_tecla_pausa(nota), width=4, height=10, font=("Helvetica", 10, "bold"))
             else:
-                tecla = tk.Button(self.root, text=nota, command=lambda nota=nota: self.adicionar_tecla(nota), width=4, height=10, bg="white")
+                tecla = tk.Button(self.root, text="", command=lambda nota=nota: self.adicionar_tecla(nota), width=4, height=10, bg="white")
             tecla.grid(row=0, column=notas_brancas.index(nota), padx=5, pady=5)
             self.teclas.append(tecla)
 
         # Criação de botões pretos (sustenidos)
         notas_pretas = ["C#", "D#", "F#", "G#", "A#"]
         for nota in notas_pretas:
-            tecla = tk.Button(self.root, text=nota, command=lambda nota=nota: self.adicionar_tecla(nota), bg="black", fg="white", width=2, height=6)
+            tecla = tk.Button(self.root, text="", command=lambda nota=nota: self.adicionar_tecla(nota), bg="black", fg="white", width=2, height=6)
             tecla.grid(row=0, column=notas_brancas.index(nota[0]) + 1, padx=5, pady=5)
             self.teclas.append(tecla)
 
