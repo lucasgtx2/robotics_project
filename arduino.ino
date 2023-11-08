@@ -1,7 +1,6 @@
 // Código de ativação das solenides Arduino
 
 // Bibliotecas
-import serial
 
 // Declaração de variáveis globais
 Serial.setTimeout(1);
