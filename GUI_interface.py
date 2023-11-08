@@ -2,6 +2,11 @@ import tkinter as tk
 from tkinter import filedialog
 import mido
 from tkinter import ttk  # Importe ttk para usar abas
+import serial
+
+# Comunicação serial com Arduino
+arduino = serial.Serial(port='COM4', baudrate=115200, timeout=.1) 
+
 
 class PianoApp:
     def __init__(self, root):
@@ -52,25 +57,41 @@ class PianoApp:
         confirmar_botao = tk.Button(self.root, text="Confirmar", command=self.armazenar_sequencia)
         confirmar_botao.grid(row=5, column=0, padx=10, pady=10, columnspan=8)
 
+        # Botão para enviar tudo ao Arduino
+        send_button = tk.Button(self.root, text="Enviar para Arduino", command=self.send_to_arduino)
+        send_button.grid(row=6, column=0, padx=10, pady=10, columnspan=8)
+
     def adicionar_tecla(self, nota):
-        self.tecla_atual += f"{nota} "
+        self.tecla_atual += f"{nota}"
 
     def adicionar_tecla_pausa(self, nota):
-        self.tecla_atual += f"Pausa "
+        self.tecla_atual += f"P"
+
+    def send_to_arduino(self, sequencias):
+        try:
+            for sequencia in sequencias:
+                arduino.write(sequencia.encode())
+                print("Data sent to Arduino:", sequencia)
+        except Exception as e:
+            print("Error while sending data to Arduino:", str(e))
 
     def armazenar_sequencia(self):
         sequencia = self.tecla_atual.strip()
         tempo = self.tempo_entry.get()
         escala = self.escala_entry.get()  # Captura o valor da entrada da escala
+        enviar = self.enviar_entry.get()
         if sequencia and tempo and escala:
             sequencia_completa = f"S{sequencia}T{tempo}E{escala}"  # Inclui a escala na sequência
-            sequencia_completa = sequencia_completa.replace(" ", "")
             self.sequencias.append(sequencia_completa)
             self.tecla_atual = ""
             self.tempo_entry.delete(0, "end")
             self.escala_entry.delete(0, "end")  # Limpa o campo da escala
             print("Sequência armazenada:", sequencia_completa)
             print("Todas as sequências:", self.sequencias)
+
+            # Send the data to Arduino
+        if enviar:
+            send_to_arduino(sequencia_completa)
 
 class HomeApp:
     def __init__(self, root):
