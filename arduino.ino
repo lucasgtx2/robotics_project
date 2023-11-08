@@ -34,5 +34,14 @@ void loop() {
   lista_acordes = musica.split('|');
 
   // Extrair dados 
+  int numAcordes = sizeof(lista_acordes);
+  for (int i=0; i<numAcordes; i++) {
+    String acorde = lista_acordes(i);
+    String S = acorde.indexof("S");
+    String T = acorde.indexof("T");
+    String E = acorde.indexof("E");
+    String notas = acorde.substring(S,T);
+    String tempo = acorde.substring(T,E);
+  }
 
 }
