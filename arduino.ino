@@ -2,7 +2,6 @@
 
 // Bibliotecas
 
-
 // Declaração de variáveis globais
 String musica;
 StringArray lista_acordes;
@@ -66,7 +65,6 @@ void loop() {
     // Desliga solenoides
     for (int i=0; i<sizeof(notas); i++) {
       digitalWrite(notas(i), LOW);
-    }
     }
   }
 }
