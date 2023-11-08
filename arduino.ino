@@ -3,7 +3,8 @@
 // Bibliotecas
 
 // Declaração de variáveis globais
-Serial.setTimeout(1);
+String musica;
+StringArray lista_acordes;
 
 // Configurações do Arduino
 void setup() {
@@ -24,6 +25,14 @@ void setup() {
 }
 
 void loop() {
+  // Leitura da Serial
   while (!Serial.available());
-  x = Serial.readString();
+  musica = Serial.readString();
+  Serial.print(musica);
+
+  // Cria lista de acordes
+  lista_acordes = musica.split('|');
+
+  // Extrair dados 
+
 }
