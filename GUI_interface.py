@@ -5,8 +5,7 @@ from tkinter import ttk  # Importe ttk para usar abas
 import serial
 
 # Comunicação serial com Arduino
-arduino = serial.Serial(port='COM4', baudrate=115200, timeout=.1) 
-
+#arduino = serial.Serial(port='COM4', baudrate=115200, timeout=.1) 
 
 class PianoApp:
     def __init__(self, root):
@@ -67,11 +66,11 @@ class PianoApp:
     def adicionar_tecla_pausa(self, nota):
         self.tecla_atual += f"P"
 
-    def send_to_arduino(self, sequencias):
+    def send_to_arduino(self):
         try:
-            for sequencia in sequencias:
-                arduino.write(sequencia.encode())
-                print("Data sent to Arduino:", sequencia)
+            #arduino.write(sequencia.encode())
+            sequencias_string = "|".join(self.sequencias)
+            print("Data sent to Arduino:", sequencias_string)
         except Exception as e:
             print("Error while sending data to Arduino:", str(e))
 
@@ -79,7 +78,6 @@ class PianoApp:
         sequencia = self.tecla_atual.strip()
         tempo = self.tempo_entry.get()
         escala = self.escala_entry.get()  # Captura o valor da entrada da escala
-        enviar = self.enviar_entry.get()
         if sequencia and tempo and escala:
             sequencia_completa = f"S{sequencia}T{tempo}E{escala}"  # Inclui a escala na sequência
             self.sequencias.append(sequencia_completa)
@@ -88,10 +86,6 @@ class PianoApp:
             self.escala_entry.delete(0, "end")  # Limpa o campo da escala
             print("Sequência armazenada:", sequencia_completa)
             print("Todas as sequências:", self.sequencias)
-
-            # Send the data to Arduino
-        if enviar:
-            send_to_arduino(sequencia_completa)
 
 class HomeApp:
     def __init__(self, root):
