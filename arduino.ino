@@ -18,8 +18,9 @@ void setup() {
 }
 
 void loop() {
+  while (!Serial.available()); 
+  String musica = Serial.readString();
 
-  String musica = "SCEFT2000Z1|SPT200Z1|SJKT73Z1";
   LinkedList<String> resultList;
 
   // Split the string and append to the list

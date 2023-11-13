@@ -21,7 +21,7 @@ class PianoApp:
         self.sequencias = []
 
         # Inicialização da comunicação serial com Arduino
-        self.arduino = serial.Serial(port='COM7', baudrate=9600, timeout=0.1)
+        self.arduino = serial.Serial(port='COM8', baudrate=9600, timeout=0.1)
 
         self.criar_interface()
 
