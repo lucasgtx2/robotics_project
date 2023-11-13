@@ -6,18 +6,18 @@
 String musica;
 StringArray lista_acordes;
 
-const int C = 8;
-const int D = 7;
-const int E = 6;
+const int C = 2;
+const int D = 3;
+const int E = 4;
 const int F = 5;
-const int G = 3;
-const int A = 4;
-const int B = 9;
-const int J = 13; //C#
-const int K = 12; //D#
+const int G = 6;
+const int A = 7;
+const int B = 8;
+const int J = 9;  //C#
+const int K = 10; //D#
 const int L = 11; //F#
-const int M = 10; //G#
-const int N = 2;  //A#
+const int M = 12; //G#
+const int N = 13; //A#
 
 // Configurações do Arduino
 void setup() {
@@ -57,21 +57,17 @@ void loop() {
     Serial.print(acorde);
 
     // Aciona solenoides
-    if (notas(0) != "P"){
-      for (int i=0; i<sizeof(notas); i++) {
-        //digitalWrite(notas(i), HIGH);
-        Serial.print(notas(i));
-      }
+    for (int i=0; i<sizeof(notas); i++) {
+      //digitalWrite(notas(i), HIGH);
+      Serial.print(notas(i));
+    }
 
-      delay(tempo);
+    delay(tempo);
 
-      // Desliga solenoides
-      for (int i=0; i<sizeof(notas); i++) {
-        //digitalWrite(notas(i), LOW);
-        Serial.print(notas(i));
-      }
-    } else {
-      delay(tempo);
+    // Desliga solenoides
+    for (int i=0; i<sizeof(notas); i++) {
+      //digitalWrite(notas(i), LOW);
+      Serial.print(notas(i));
     }
   }
 }

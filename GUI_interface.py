@@ -2,10 +2,21 @@ import tkinter as tk
 from tkinter import filedialog
 import mido
 from tkinter import ttk  # Importe ttk para usar abas
+
+# Comunicação Arduino
 import serial
 
+# Comunicação UR
+from pyModbusTCP.server import ModbusServer
+from time import sleep
+
+#Create an instance of ModbusServer
+SERVER_ADDRESS = '10.103.16.130'
+SERVER_PORT = 502
+server = ModbusServer(SERVER_ADDRESS, SERVER_PORT, no_block = True)
+
 # Comunicação serial com Arduino
-#arduino = serial.Serial(port='COM4', baudrate=115200, timeout=.1) 
+arduino = serial.Serial(port='COM7', baudrate=115200, timeout=.1) 
 
 class PianoApp:
     def __init__(self, root):
@@ -62,8 +73,8 @@ class PianoApp:
         confirmar_botao = tk.Button(self.root, text="Confirmar", command=self.armazenar_sequencia)
         confirmar_botao.grid(row=5, column=0, padx=10, pady=10, columnspan=8)
 
-        # Botão para enviar tudo ao Arduino
-        send_button = tk.Button(self.root, text="Enviar para Arduino", command=self.send_to_arduino)
+        # Botão para enviar infos ao Arduino e ao UR
+        send_button = tk.Button(self.root, text="Enviar", command=self.enviar)
         send_button.grid(row=6, column=0, padx=10, pady=10, columnspan=8)
 
     def adicionar_tecla(self, nota):
@@ -72,13 +83,23 @@ class PianoApp:
     def adicionar_tecla_pausa(self, nota):
         self.tecla_atual += f"P"
 
-    def send_to_arduino(self):
+    def enviar(self):
         try:
-            #arduino.write(sequencia.encode())
+            # Arduino
             sequencias_string = "|".join(self.sequencias)
+            arduino.write(sequencias_string.encode())
+            # Teste arduino
             print("Data sent to Arduino:", sequencias_string)
+
+            # UR
+            #server.start()
+            #print('Server is online')
+            #c = True
+            #server.data_bank.set_input_registers(180, [x])
+
         except Exception as e:
-            print("Error while sending data to Arduino:", str(e))
+            print(str(e))
+
 
     def armazenar_sequencia(self):
         sequencia = self.tecla_atual.strip()
