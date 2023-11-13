@@ -101,7 +101,7 @@ class PianoApp:
         tempo = self.tempo_entry.get()
         escala = self.escala_entry.get()  # Captura o valor da entrada da escala
         if sequencia and tempo and escala:
-            sequencia_completa = f"S{sequencia}T{tempo}E{escala}"  # Inclui a escala na sequência
+            sequencia_completa = f"S{sequencia}T{tempo}Z{escala}"  # Inclui a escala na sequência
             self.sequencias.append(sequencia_completa)
             self.tecla_atual = ""
             self.tempo_entry.delete(0, "end")
