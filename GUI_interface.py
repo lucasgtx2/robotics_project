@@ -1,22 +1,15 @@
 import tkinter as tk
 from tkinter import filedialog
 import mido
-from tkinter import ttk  # Importe ttk para usar abas
-
-# Comunicação Arduino
+from tkinter import ttk
 import serial
-
-# Comunicação UR
 from pyModbusTCP.server import ModbusServer
 from time import sleep
 
-#Create an instance of ModbusServer
+# Create an instance of ModbusServer
 SERVER_ADDRESS = '10.103.16.130'
 SERVER_PORT = 502
-server = ModbusServer(SERVER_ADDRESS, SERVER_PORT, no_block = True)
-
-# Comunicação serial com Arduino
-arduino = serial.Serial(port='COM7', baudrate=115200, timeout=.1) 
+server = ModbusServer(SERVER_ADDRESS, SERVER_PORT, no_block=True)
 
 class PianoApp:
     def __init__(self, root):
@@ -26,6 +19,9 @@ class PianoApp:
         self.teclas = []
         self.tecla_atual = ""
         self.sequencias = []
+
+        # Inicialização da comunicação serial com Arduino
+        self.arduino = serial.Serial(port='COM7', baudrate=9600, timeout=0.1)
 
         self.criar_interface()
 
@@ -42,14 +38,14 @@ class PianoApp:
 
         # Criação de botões pretos (sustenidos)
         notas_pretas = ["J", "K", "L", "M", "N"]
-        i=0
+        i = 0
         for nota in notas_pretas:
             tecla = tk.Button(self.root, text="", command=lambda nota=nota: self.adicionar_tecla(nota), bg="black", fg="white", width=2, height=6)
-            if nota in ["J","K"]:
+            if nota in ["J", "K"]:
                 tecla.grid(row=0, column=i + 1, padx=5, pady=5)
-                i+=1
+                i += 1
             else:
-                i+=1
+                i += 1
                 tecla.grid(row=0, column=i + 1, padx=5, pady=5)
             self.teclas.append(tecla)
 
@@ -87,19 +83,18 @@ class PianoApp:
         try:
             # Arduino
             sequencias_string = "|".join(self.sequencias)
-            arduino.write(sequencias_string.encode())
+            self.arduino.write(sequencias_string.encode())
             # Teste arduino
             print("Data sent to Arduino:", sequencias_string)
 
             # UR
-            #server.start()
-            #print('Server is online')
-            #c = True
-            #server.data_bank.set_input_registers(180, [x])
+            # server.start()
+            # print('Server is online')
+            # c = True
+            # server.data_bank.set_input_registers(180, [x])
 
         except Exception as e:
             print(str(e))
-
 
     def armazenar_sequencia(self):
         sequencia = self.tecla_atual.strip()

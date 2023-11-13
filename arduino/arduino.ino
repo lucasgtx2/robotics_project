@@ -1,73 +1,113 @@
-// Código de ativação das solenides Arduino
+// Arduino Solenoid Activation Code
 
-// Bibliotecas
+#include <Arduino.h>
+#include <LinkedList.h>
 
-// Declaração de variáveis globais
+// Global variables
 String musica;
-StringArray lista_acordes;
 
-const int C = 2;
-const int D = 3;
-const int E = 4;
-const int F = 5;
-const int G = 6;
-const int A = 7;
-const int B = 8;
-const int J = 9;  //C#
-const int K = 10; //D#
-const int L = 11; //F#
-const int M = 12; //G#
-const int N = 13; //A#
+int mapCharToConstant(char note);
 
-// Configurações do Arduino
+// Arduino setup
 void setup() {
-  Serial.begin(115200);
+  Serial.begin(9600);
 
-  pinMode(C, OUTPUT);
-  pinMode(D, OUTPUT);
-  pinMode(E, OUTPUT);
-  pinMode(F, OUTPUT);
-  pinMode(G, OUTPUT);
-  pinMode(A, OUTPUT);
-  pinMode(B, OUTPUT);
-  pinMode(J, OUTPUT);
-  pinMode(K, OUTPUT);
-  pinMode(L, OUTPUT);
-  pinMode(M, OUTPUT);
-  pinMode(N, OUTPUT);
+  for (int i = 2; i < 14; i++) {
+    pinMode(i, OUTPUT);
+  }
 }
 
 void loop() {
-  // Leitura da Serial
-  while (!Serial.available());
-  musica = Serial.readString();
-  Serial.print(musica);
 
-  // Cria lista de acordes
-  lista_acordes = musica.split('|');
+  String musica = "SCEFT2000Z1|SPT200Z1|SJKT73Z1";
+  LinkedList<String> resultList;
 
-  // Tocar música completa
-  int numAcordes = sizeof(lista_acordes);
-  for (int i=0; i<numAcordes; i++) {
+  // Split the string and append to the list
+  splitStringAndAppendToList(musica, '|', resultList);
 
-    // Obtenção da sequência de notas e tempos
-    String acorde = lista_acordes(i);
-    String notas = acorde.substring(acorde.indexof("S")+1,acorde.indexof("T"));
-    int tempo = acorde.substring(acorde.indexof("T")+1,acorde.indexof("E"));
-    Serial.print(acorde);
+  // Print the result
+  Serial.println("Result List:");
+  for (int i = 0; i < resultList.size(); i++) {
+    Serial.println(resultList.get(i));
+  }
 
-    // Aciona solenoides
-    for (int i=0; i<sizeof(notas); i++) {
-      //digitalWrite(notas(i), HIGH);
-      Serial.print(notas(i));
-    }
-
-    delay(tempo);
-
-    // Desliga solenoides
-    for (int i=0; i<sizeof(notas); i++) {
-      //digitalWrite(notas(i), LOW);
-      Serial.print(notas(i));
+  for(int i = 0; i < resultList.size(); i++){
+    String chord = resultList.get(i);
+    String notes = chord.substring(chord.indexOf("S") + 1, chord.indexOf("T"));
+    unsigned long tempo = chord.substring(chord.indexOf("T") + 1, chord.indexOf("Z")).toInt();
+  
+    // Activate solenoids
+    if (notes.charAt(0) != 'P') {
+      for (int j = 0; j < notes.length(); j++) {
+        int mappedValue = mapCharToConstant(notes.charAt(j));
+        //digitalWrite(mappedValue, HIGH); // Activate solenoid
+        Serial.println(mappedValue);
+      }
+  
+      delay(tempo);
+      Serial.println(tempo);
+  
+      // Turn off solenoids
+      for (int j = 0; j < notes.length(); j++) {
+        int mappedValue = mapCharToConstant(notes.charAt(j));
+        //digitalWrite(mappedValue, LOW); // Turn off solenoid
+      }
+    } else {
+      delay(tempo);
     }
   }
+  delay(10000);
+}
+
+// Function to map a character to a constant integer
+int mapCharToConstant(char note) {
+  switch (note) {
+    case 'C':
+      return 8;
+    case 'D':
+      return 7;
+    case 'E':
+      return 6;
+    case 'F':
+      return 5;
+    case 'G':
+      return 3;
+    case 'A':
+      return 4;
+    case 'B':
+      return 9;
+    case 'J':
+      return 13;
+    case 'K':
+      return 12;
+    case 'L':
+      return 11;
+    case 'M':
+      return 10;
+    case 'N':
+      return 2;
+    default:
+      // Return an invalid value or handle the case as needed
+      return -1;
+  }
+}
+
+void splitStringAndAppendToList(const String &inputString, char separator, LinkedList<String> &outputList) {
+  int separatorIndex = 0;
+  int lastIndex = 0;
+
+  while ((separatorIndex = inputString.indexOf(separator, lastIndex)) != -1) {
+    // Extract substring between lastIndex and separatorIndex
+    String substring = inputString.substring(lastIndex, separatorIndex);
+
+    // Append substring to the list
+    outputList.add(substring);
+
+    // Update lastIndex to the character after the separator
+    lastIndex = separatorIndex + 1;
+  }
+
+  // Append the last substring (after the last separator) to the list
+  String lastSubstring = inputString.substring(lastIndex);
+  outputList.add(lastSubstring);
 }
