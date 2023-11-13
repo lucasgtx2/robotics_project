@@ -30,10 +30,16 @@ class PianoApp:
             self.teclas.append(tecla)
 
         # Criação de botões pretos (sustenidos)
-        notas_pretas = ["C#", "D#", "F#", "G#", "A#"]
+        notas_pretas = ["J", "K", "L", "M", "N"]
+        i=0
         for nota in notas_pretas:
             tecla = tk.Button(self.root, text="", command=lambda nota=nota: self.adicionar_tecla(nota), bg="black", fg="white", width=2, height=6)
-            tecla.grid(row=0, column=notas_brancas.index(nota[0]) + 1, padx=5, pady=5)
+            if nota in ["J","K"]:
+                tecla.grid(row=0, column=i + 1, padx=5, pady=5)
+                i+=1
+            else:
+                i+=1
+                tecla.grid(row=0, column=i + 1, padx=5, pady=5)
             self.teclas.append(tecla)
 
         # Título "Digite o tempo"
