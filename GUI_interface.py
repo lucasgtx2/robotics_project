@@ -7,7 +7,7 @@ from pyModbusTCP.server import ModbusServer
 from time import sleep
 
 # Create an instance of ModbusServer
-SERVER_ADDRESS = '10.103.16.130'
+SERVER_ADDRESS = '10.102.22.73'
 SERVER_PORT = 502
 server = ModbusServer(SERVER_ADDRESS, SERVER_PORT, no_block=True)
 
@@ -19,6 +19,7 @@ class PianoApp:
         self.teclas = []
         self.tecla_atual = ""
         self.sequencias = []
+        self.escalas = []
 
         # Inicialização da comunicação serial com Arduino
         self.arduino = serial.Serial(port='COM7', baudrate=9600, timeout=1)
@@ -79,11 +80,12 @@ class PianoApp:
 
     def limpar(self):
         self.sequencias = [];
+        self.escalas = [];
 
     def adicionar_tecla(self, nota):
         self.tecla_atual += f"{nota}"
 
-    def adicionar_tecla_pausa(self, nota):
+    def adicionar_tecla_pausa(self):
         self.tecla_atual += f"P"
 
     def enviar(self):
@@ -95,10 +97,9 @@ class PianoApp:
             print("Data sent to Arduino:", sequencias_string)
 
             # UR
-            # server.start()
-            # print('Server is online')
-            # c = True
-            # server.data_bank.set_input_registers(180, [x])
+            server.start()
+            print('Server is online')
+            server.data_bank.set_input_registers(self.escalas)
 
         except Exception as e:
             print(str(e))
@@ -109,10 +110,12 @@ class PianoApp:
         escala = self.escala_entry.get()  # Captura o valor da entrada da escala
         if sequencia and tempo and escala:
             sequencia_completa = f"S{sequencia}T{tempo}Z{escala}"  # Inclui a escala na sequência
+            escala_completa = f"T{tempo}Z{escala}"
             self.sequencias.append(sequencia_completa)
+            self.escalas.append(escala_completa)
             self.tecla_atual = ""
-            self.tempo_entry.delete(0, "end")
-            self.escala_entry.delete(0, "end")  # Limpa o campo da escala
+            #self.tempo_entry.delete(0, "end")
+            #self.escala_entry.delete(0, "end")  # Limpa o campo da escala
             print("Sequência armazenada:", sequencia_completa)
             print("Todas as sequências:", self.sequencias)
 

@@ -57,7 +57,7 @@ void loop() {
       delay(tempo);
     }
   }
-  delay(500);
+  delay(5);
 }
 
 // Function to map a character to a constant integer
