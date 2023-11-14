@@ -18,7 +18,7 @@ void setup() {
 }
 
 void loop() {
-  while (!Serial.available()); 
+  //while (!Serial.available());
   String musica = Serial.readString();
 
   LinkedList<String> resultList;
@@ -41,7 +41,7 @@ void loop() {
     if (notes.charAt(0) != 'P') {
       for (int j = 0; j < notes.length(); j++) {
         int mappedValue = mapCharToConstant(notes.charAt(j));
-        //digitalWrite(mappedValue, HIGH); // Activate solenoid
+        digitalWrite(mappedValue, HIGH); // Activate solenoid
         Serial.println(mappedValue);
       }
   
@@ -51,13 +51,13 @@ void loop() {
       // Turn off solenoids
       for (int j = 0; j < notes.length(); j++) {
         int mappedValue = mapCharToConstant(notes.charAt(j));
-        //digitalWrite(mappedValue, LOW); // Turn off solenoid
+        digitalWrite(mappedValue, LOW); // Turn off solenoid
       }
     } else {
       delay(tempo);
     }
   }
-  delay(10000);
+  delay(500);
 }
 
 // Function to map a character to a constant integer
