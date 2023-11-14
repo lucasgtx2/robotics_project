@@ -73,6 +73,13 @@ class PianoApp:
         send_button = tk.Button(self.root, text="Enviar", command=self.enviar)
         send_button.grid(row=6, column=0, padx=10, pady=10, columnspan=8)
 
+        # Botão para limpar sequência
+        confirmar_botao = tk.Button(self.root, text="Limpar sequência", command=self.limpar)
+        confirmar_botao.grid(row=7, column=0, padx=10, pady=10, columnspan=8)
+
+    def limpar(self):
+        self.sequencias = [];
+
     def adicionar_tecla(self, nota):
         self.tecla_atual += f"{nota}"
 
