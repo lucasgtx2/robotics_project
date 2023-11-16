@@ -78,6 +78,14 @@ class PianoApp:
         confirmar_botao = tk.Button(self.root, text="Limpar sequência", command=self.limpar)
         confirmar_botao.grid(row=7, column=0, padx=10, pady=10, columnspan=8)
 
+        # Título "Inserir música"
+        escala_label = tk.Label(self.root, text="Inserir música")
+        escala_label.grid(row=8, column=0, padx=10, pady=5, columnspan=8)
+
+        # Campo de entrada para a música completa
+        self.string_entry = tk.Entry(self.root)
+        self.string_entry.grid(row=9, column=0, padx=10, pady=5, columnspan=8)
+
     def limpar(self):
         self.sequencias = [];
         self.escalas = [];
@@ -91,8 +99,13 @@ class PianoApp:
     def enviar(self):
         try:
             # Arduino
-            sequencias_string = "|".join(self.sequencias)
+            if self.string_entry.get() != "":
+                sequencias_string = self.string_entry.get()
+            else:
+                sequencias_string = "|".join(self.sequencias)
+
             self.arduino.write(sequencias_string.encode())
+
             # Teste arduino
             print("Data sent to Arduino:", sequencias_string)
 
