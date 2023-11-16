@@ -22,7 +22,7 @@ class PianoApp:
         self.escalas = []
 
         # Inicialização da comunicação serial com Arduino
-        self.arduino = serial.Serial(port='COM7', baudrate=9600, timeout=1)
+        #self.arduino = serial.Serial(port='COM7', baudrate=9600, timeout=1)
 
         self.criar_interface()
 
