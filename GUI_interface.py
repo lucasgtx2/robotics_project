@@ -6,10 +6,8 @@ import serial
 from pyModbusTCP.server import ModbusServer
 from time import sleep
 
-# Create an instance of ModbusServer
-SERVER_ADDRESS = '10.102.22.73'
+SERVER_ADDRESS = '10.103.16.157'
 SERVER_PORT = 502
-server = ModbusServer(SERVER_ADDRESS, SERVER_PORT, no_block=True)
 
 class PianoApp:
     def __init__(self, root):
@@ -22,7 +20,7 @@ class PianoApp:
         self.escalas = []
 
         # Inicialização da comunicação serial com Arduino
-        #self.arduino = serial.Serial(port='COM7', baudrate=9600, timeout=1)
+        self.arduino = serial.Serial(port='COM7', baudrate=9600, timeout=1)
 
         self.criar_interface()
 
@@ -110,9 +108,11 @@ class PianoApp:
             print("Data sent to Arduino:", sequencias_string)
 
             # UR
+            # Create an instance of ModbusServer
+            server = ModbusServer(SERVER_ADDRESS, SERVER_PORT, no_block=True)
             server.start()
             print('Server is online')
-            server.data_bank.set_input_registers(self.escalas)
+            server.data_bank.set_input_registers(0, [10])
 
         except Exception as e:
             print(str(e))

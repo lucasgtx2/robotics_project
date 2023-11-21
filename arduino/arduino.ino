@@ -1,5 +1,4 @@
 // Arduino Solenoid Activation Code
-
 #include <Arduino.h>
 #include <LinkedList.h>
 
@@ -7,6 +6,7 @@
 String musica;
 
 int mapCharToConstant(char note);
+void splitStringAndAppendToList(const String &inputString, char separator, LinkedList<String> &outputList);
 
 // Arduino setup
 void setup() {
@@ -19,7 +19,7 @@ void setup() {
 
 void loop() {
   //while (!Serial.available());
-  String musica = Serial.readString();
+  musica = Serial.readString();
 
   LinkedList<String> resultList;
 
@@ -64,29 +64,29 @@ void loop() {
 int mapCharToConstant(char note) {
   switch (note) {
     case 'C':
-      return 8;
-    case 'D':
-      return 7;
-    case 'E':
-      return 6;
-    case 'F':
-      return 5;
-    case 'G':
-      return 3;
-    case 'A':
-      return 4;
-    case 'B':
-      return 9;
-    case 'J':
-      return 13;
-    case 'K':
-      return 12;
-    case 'L':
-      return 11;
-    case 'M':
-      return 10;
-    case 'N':
       return 2;
+    case 'D':
+      return 3;
+    case 'E':
+      return 4;
+    case 'F':
+      return 10;
+    case 'G':
+      return 11;
+    case 'A':
+      return 12;
+    case 'B':
+      return 13;
+    case 'J':
+      return 9;
+    case 'K':
+      return 8;
+    case 'L':
+      return 7;
+    case 'M':
+      return 6;
+    case 'N':
+      return 5;
     default:
       // Return an invalid value or handle the case as needed
       return -1;
