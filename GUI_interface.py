@@ -6,7 +6,7 @@ import serial
 from pyModbusTCP.server import ModbusServer
 from time import sleep
 
-SERVER_ADDRESS = '10.103.16.157'
+SERVER_ADDRESS = '10.103.16.110' # IP do computador (servidor)
 SERVER_PORT = 502
 
 class PianoApp:
@@ -112,7 +112,7 @@ class PianoApp:
             server = ModbusServer(SERVER_ADDRESS, SERVER_PORT, no_block=True)
             server.start()
             print('Server is online')
-            server.data_bank.set_input_registers(0, [10])
+            server.data_bank.set_input_registers(180, [10])
 
         except Exception as e:
             print(str(e))
