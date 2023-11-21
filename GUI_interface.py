@@ -5,6 +5,7 @@ from tkinter import ttk
 import serial
 from pyModbusTCP.server import ModbusServer
 from time import sleep
+import re
 
 SERVER_ADDRESS = '10.103.16.110' # IP do computador (servidor)
 SERVER_PORT = 502
@@ -20,7 +21,7 @@ class PianoApp:
         self.escalas = []
 
         # Inicialização da comunicação serial com Arduino
-        self.arduino = serial.Serial(port='COM7', baudrate=9600, timeout=1)
+        #self.arduino = serial.Serial(port='COM7', baudrate=9600, timeout=1)
 
         self.criar_interface()
 
@@ -102,17 +103,31 @@ class PianoApp:
             else:
                 sequencias_string = "|".join(self.sequencias)
 
-            self.arduino.write(sequencias_string.encode())
+            #self.arduino.write(sequencias_string.encode())
 
             # Teste arduino
             print("Data sent to Arduino:", sequencias_string)
 
             # UR
             # Create an instance of ModbusServer
-            server = ModbusServer(SERVER_ADDRESS, SERVER_PORT, no_block=True)
-            server.start()
-            print('Server is online')
-            server.data_bank.set_input_registers(180, [10])
+            #server = ModbusServer(SERVER_ADDRESS, SERVER_PORT, no_block=True)
+            #server.start()
+            #print('Server is online')
+
+            for s in self.sequencias:
+                # Using regular expressions to extract values
+                match = re.match(r"S(\d+)T(\d+)Z(\d+)", s)
+                
+                if match:
+                    time_value = int(match.group(2))
+                    scale_value = int(match.group(3))
+                    
+                    print(f"Time: {time_value}, Scale: {scale_value}")
+                    #server.data_bank.set_input_registers(180, [scale_value])
+                    
+                    # Introduce a delay based on the time value
+                    sleep(time_value)
+
 
         except Exception as e:
             print(str(e))
