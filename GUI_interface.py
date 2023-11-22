@@ -29,7 +29,7 @@ class PianoApp:
         notas_brancas = ["C", "D", "E", "F", "G", "A", "B", "NADA"]  # Adicionei "NADA"
         for nota in notas_brancas:
             if nota == "NADA":
-                tecla = tk.Button(self.root, text=nota, command=lambda nota=nota: self.adicionar_tecla_pausa(nota), width=4, height=10, font=("Helvetica", 10, "bold"))
+                tecla = tk.Button(self.root, text=nota, command=lambda nota=nota: self.adicionar_tecla_pausa(), width=4, height=10, font=("Helvetica", 10, "bold"))
             else:
                 tecla = tk.Button(self.root, text="", command=lambda nota=nota: self.adicionar_tecla(nota), width=4, height=10, bg="white")
             tecla.grid(row=0, column=notas_brancas.index(nota), padx=5, pady=5)
@@ -85,8 +85,8 @@ class PianoApp:
         self.string_entry.grid(row=9, column=0, padx=10, pady=5, columnspan=8)
 
     def limpar(self):
-        self.sequencias = [];
-        self.escalas = [];
+        self.sequencias = []
+        self.escalas = []
 
     def adicionar_tecla(self, nota):
         self.tecla_atual += f"{nota}"
@@ -96,6 +96,16 @@ class PianoApp:
 
     def enviar(self):
         try:
+            # UR
+            # Create an instance of ModbusServer
+            server = ModbusServer(SERVER_ADDRESS, SERVER_PORT, no_block=True)
+            server.start()
+            #print('Server is online')
+            sleep(5)
+            # Referenciamento na escala do primeiro acorde
+            server.data_bank.set_input_registers(180, [int((self.sequencias[0])[-1])])
+            sleep(3)
+
             # Arduino
             if self.string_entry.get() != "":
                 sequencias_string = self.string_entry.get()
@@ -106,24 +116,17 @@ class PianoApp:
 
             #print("Data sent to Arduino:", sequencias_string)
 
-            # UR
-            # Create an instance of ModbusServer
-            server = ModbusServer(SERVER_ADDRESS, SERVER_PORT, no_block=True)
-            server.start()
-            print('Server is online')
-            
             sleep(1) # sincronização da comunicação
             for s in self.sequencias:
-                # Using regular expressions to extract values
                 tempo = int(s[s.index("T")+1:s.index("Z")])
                 escala = int(s[-1])
-                print(f"Time: {tempo}, Scale: {escala}")
+                #print(f"Time: {tempo}, Scale: {escala}")
                 server.data_bank.set_input_registers(180, [escala])
                     
                 # Introduce a delay based on the time value
                 sleep(tempo/1000)
 
-            print("fim")
+            #print("fim")
 
         except Exception as e:
             print(str(e))
@@ -138,8 +141,6 @@ class PianoApp:
             self.sequencias.append(sequencia_completa)
             self.escalas.append(escala_completa)
             self.tecla_atual = ""
-            #self.tempo_entry.delete(0, "end")
-            #self.escala_entry.delete(0, "end")  # Limpa o campo da escala
             print("Sequência armazenada:", sequencia_completa)
             print("Todas as sequências:", self.sequencias)
 
