@@ -18,9 +18,14 @@ class PianoApp:
         self.tecla_atual = ""
         self.sequencias = []
         self.escalas = []
+        self.i = 0
 
         # Inicialização da comunicação serial com Arduino
         self.arduino = serial.Serial(port='COM7', baudrate=9600, timeout=1)
+
+        self.server = ModbusServer(SERVER_ADDRESS, SERVER_PORT, no_block=True)
+        self.server.start()
+        print('Server is online')
 
         self.criar_interface()
 
@@ -98,35 +103,37 @@ class PianoApp:
         try:
             # UR
             # Create an instance of ModbusServer
-            server = ModbusServer(SERVER_ADDRESS, SERVER_PORT, no_block=True)
-            server.start()
-            print('Server is online')
-            sleep(5)
+           
             # Referenciamento na escala do primeiro acorde
-            server.data_bank.set_input_registers(180, [int((self.sequencias[0])[-1])])
-            sleep(3)
 
-            # Arduino
             if self.string_entry.get() != "":
+                sequencias_list = self.string_entry.get().split("|")
                 sequencias_string = self.string_entry.get()
             else:
+                sequencias_list = self.sequencias
                 sequencias_string = "|".join(self.sequencias)
 
-            self.arduino.write(sequencias_string.encode())
+            self.server.data_bank.set_input_registers(181, [1])
+            self.server.data_bank.set_input_registers(180, [int((sequencias_list[0])[-1])])
 
+            print("Start UR5")
+            sleep(3)
+
+            self.arduino.write(sequencias_string.encode())
             print("Data sent to Arduino:", sequencias_string)
 
             sleep(1) # sincronização da comunicação
-            for s in self.sequencias:
+            for s in sequencias_list:
                 tempo = int(s[s.index("T")+1:s.index("Z")])
                 escala = int(s[-1])
                 print(f"Time: {tempo}, Scale: {escala}")
-                server.data_bank.set_input_registers(180, [escala])
+                self.server.data_bank.set_input_registers(180, [escala])
                     
                 # Introduce a delay based on the time value
                 sleep(tempo/1000)
 
             print("fim")
+            self.server.data_bank.set_input_registers(181, [0])
 
         except Exception as e:
             print(str(e))
