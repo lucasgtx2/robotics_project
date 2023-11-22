@@ -104,15 +104,15 @@ class PianoApp:
 
             self.arduino.write(sequencias_string.encode())
 
-            #print("Data sent to Arduino:", sequencias_string)
+            # Teste arduino
+            print("Data sent to Arduino:", sequencias_string)
 
             # UR
             # Create an instance of ModbusServer
             server = ModbusServer(SERVER_ADDRESS, SERVER_PORT, no_block=True)
             server.start()
             print('Server is online')
-            
-            sleep(1) # sincronização da comunicação
+
             for s in self.sequencias:
                 # Using regular expressions to extract values
                 tempo = int(s[s.index("T")+1:s.index("Z")])
@@ -156,11 +156,11 @@ class HomeApp:
 
     def criar_interface(self):
         # Botão "Criar código"
-        criar_codigo_botao = tk.Button(self.root, text="Criar código", command=self.ir_para_piano)
+        criar_codigo_botao = tk.Button(self.root, text="Criar código", command=self.ir_para_piano, font=("Arial", 12, "bold"), bg="green", fg="white", borderwidth=2, relief="raised")
         criar_codigo_botao.grid(row=0, column=0, padx=10, pady=10)
 
         # Botão "Carregar música"
-        carregar_musica_botao = tk.Button(self.root, text="Carregar música", command=self.ir_para_carregar_musica)
+        carregar_musica_botao = tk.Button(self.root, text="Carregar música", command=self.ir_para_carregar_musica, font=("Arial", 12, "bold"), bg="blue", fg="white", borderwidth=2, relief="raised")
         carregar_musica_botao.grid(row=1, column=0, padx=10, pady=10)
 
     def ir_para_piano(self):
