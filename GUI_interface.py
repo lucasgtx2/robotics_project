@@ -100,7 +100,7 @@ class PianoApp:
             # Create an instance of ModbusServer
             server = ModbusServer(SERVER_ADDRESS, SERVER_PORT, no_block=True)
             server.start()
-            #print('Server is online')
+            print('Server is online')
             sleep(5)
             # Referenciamento na escala do primeiro acorde
             server.data_bank.set_input_registers(180, [int((self.sequencias[0])[-1])])
@@ -114,19 +114,19 @@ class PianoApp:
 
             self.arduino.write(sequencias_string.encode())
 
-            #print("Data sent to Arduino:", sequencias_string)
+            print("Data sent to Arduino:", sequencias_string)
 
             sleep(1) # sincronização da comunicação
             for s in self.sequencias:
                 tempo = int(s[s.index("T")+1:s.index("Z")])
                 escala = int(s[-1])
-                #print(f"Time: {tempo}, Scale: {escala}")
+                print(f"Time: {tempo}, Scale: {escala}")
                 server.data_bank.set_input_registers(180, [escala])
                     
                 # Introduce a delay based on the time value
                 sleep(tempo/1000)
 
-            #print("fim")
+            print("fim")
 
         except Exception as e:
             print(str(e))
