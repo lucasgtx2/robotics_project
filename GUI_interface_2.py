@@ -21,7 +21,6 @@ class PianoApp:
 
         # Inicialização da comunicação serial com Arduino
         self.arduino = serial.Serial(port='COM7', baudrate=9600, timeout=1)
-
         self.criar_interface()
 
     def criar_interface(self):
@@ -85,8 +84,8 @@ class PianoApp:
         self.string_entry.grid(row=9, column=0, padx=10, pady=5, columnspan=8)
 
     def limpar(self):
-        self.sequencias = [];
-        self.escalas = [];
+        self.sequencias = []
+        self.escalas = []
 
     def adicionar_tecla(self, nota):
         self.tecla_atual += f"{nota}"

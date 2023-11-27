@@ -20,6 +20,10 @@ class PianoApp:
         self.escalas = []
         self.i = 0
 
+        # Carregando a imagem
+        self.imagem = tk.PhotoImage(file="img/playbut.png")
+        self.imagem = self.imagem.subsample(16, 16)
+
         # Inicialização da comunicação serial com Arduino
         self.arduino = serial.Serial(port='COM7', baudrate=9600, timeout=1)
 
@@ -34,7 +38,7 @@ class PianoApp:
         notas_brancas = ["C", "D", "E", "F", "G", "A", "B", "NADA"]  # Adicionei "NADA"
         for nota in notas_brancas:
             if nota == "NADA":
-                tecla = tk.Button(self.root, text=nota, command=lambda nota=nota: self.adicionar_tecla_pausa(), width=4, height=10, font=("Helvetica", 10, "bold"))
+                tecla = tk.Button(self.root, text=nota, command=lambda nota=nota: self.adicionar_tecla_pausa(), width=4, height=10, font=("Consolas", 10, "bold"))
             else:
                 tecla = tk.Button(self.root, text="", command=lambda nota=nota: self.adicionar_tecla(nota), width=4, height=10, bg="white")
             tecla.grid(row=0, column=notas_brancas.index(nota), padx=5, pady=5)
@@ -53,45 +57,50 @@ class PianoApp:
                 tecla.grid(row=0, column=i + 1, padx=5, pady=5)
             self.teclas.append(tecla)
 
-        # Título "Digite o tempo"
-        tempo_label = tk.Label(self.root, text="Digite o tempo")
-        tempo_label.grid(row=1, column=0, padx=10, pady=5, columnspan=8)
+        vazio = tk.Label(self.root, text="")
+        vazio.grid(row=1, column=0, padx=10, pady=5, columnspan=4)
 
-        # Campo de entrada para o tempo
+        # Título "Digite o tempo" e "Digite a Escala (0:5)"
+        tempo_label = tk.Label(self.root, text="Digite o tempo", font=("Consolas", 10))
+        tempo_label.grid(row=2, column=4, padx=10, pady=5, columnspan=4)
+
+        escala_label = tk.Label(self.root, text="Digite a Escala (0:4)", font=("Consolas", 10))
+        escala_label.grid(row=2, column=0, padx=10, pady=5, columnspan=4)
+
+        # Campos de entrada para o tempo e a escala
         self.tempo_entry = tk.Entry(self.root)
-        self.tempo_entry.grid(row=2, column=0, padx=10, pady=5, columnspan=8)
+        self.tempo_entry.grid(row=3, column=4, padx=7, pady=5, columnspan=4)
 
-        # Título "Digite a Escala (0:5)"
-        escala_label = tk.Label(self.root, text="Escala (0:5)")
-        escala_label.grid(row=3, column=0, padx=10, pady=5, columnspan=8)
-
-        # Campo de entrada para a escala
         self.escala_entry = tk.Entry(self.root)
-        self.escala_entry.grid(row=4, column=0, padx=10, pady=5, columnspan=8)
+        self.escala_entry.grid(row=3, column=0, padx=7, pady=5, columnspan=4)
 
-        # Botão para confirmar a sequência
-        confirmar_botao = tk.Button(self.root, text="Confirmar", command=self.armazenar_sequencia)
-        confirmar_botao.grid(row=5, column=0, padx=10, pady=10, columnspan=8)
+        # Botão "Confirmar"
+        confirmar_botao = tk.Button(self.root, text="Confirmar", command=self.armazenar_sequencia, font=("Consolas", 10))
+        confirmar_botao.grid(row=4, column=2, padx=10, pady=8, columnspan=4)
 
-        # Botão para enviar infos ao Arduino e ao UR
-        send_button = tk.Button(self.root, text="Enviar", command=self.enviar)
-        send_button.grid(row=6, column=0, padx=10, pady=10, columnspan=8)
-
-        # Botão para limpar sequência
-        confirmar_botao = tk.Button(self.root, text="Limpar sequência", command=self.limpar)
-        confirmar_botao.grid(row=7, column=0, padx=10, pady=10, columnspan=8)
+        # Criar um Label para exibir a imagem como botão
+        play_button = tk.Label(self.root, image=self.imagem, bd=0, cursor="hand2")
+        play_button.bind("<Button-1>",self.enviar)
+        play_button.grid(row=5, column=2, padx=10, pady=10, columnspan=4)
 
         # Título "Inserir música"
-        escala_label = tk.Label(self.root, text="Inserir música")
-        escala_label.grid(row=8, column=0, padx=10, pady=5, columnspan=8)
+        inserir_musica_label = tk.Label(self.root, text="Digitar música completa", font=("Consolas", 10))
+        inserir_musica_label.grid(row=7, column=0, padx=10, pady=5, columnspan=8)
 
         # Campo de entrada para a música completa
         self.string_entry = tk.Entry(self.root)
-        self.string_entry.grid(row=9, column=0, padx=10, pady=5, columnspan=8)
+        self.string_entry.grid(row=8, column=0, padx=10, pady=5, columnspan=8)
+
+        # Botão "Limpar Sequência"
+        limpar_botao = tk.Button(self.root, text="Limpar Sequência", command=self.limpar, font=("Consolas", 10))
+        limpar_botao.grid(row=9, column=2, padx=10, pady=10, columnspan=4)
+
+        self.root.mainloop()
 
     def limpar(self):
         self.sequencias = []
         self.escalas = []
+        self.string_entry.delete('0', 'end')
 
     def adicionar_tecla(self, nota):
         self.tecla_atual += f"{nota}"
@@ -99,13 +108,9 @@ class PianoApp:
     def adicionar_tecla_pausa(self):
         self.tecla_atual += f"P"
 
-    def enviar(self):
+    def enviar(self,event):
         try:
             # UR
-            # Create an instance of ModbusServer
-           
-            # Referenciamento na escala do primeiro acorde
-
             if self.string_entry.get() != "":
                 sequencias_list = self.string_entry.get().split("|")
                 sequencias_string = self.string_entry.get()
@@ -113,6 +118,7 @@ class PianoApp:
                 sequencias_list = self.sequencias
                 sequencias_string = "|".join(self.sequencias)
 
+            # Referenciamento na escala do primeiro acorde
             self.server.data_bank.set_input_registers(181, [1])
             self.server.data_bank.set_input_registers(180, [int((sequencias_list[0])[-1])])
 
@@ -126,9 +132,9 @@ class PianoApp:
             for s in sequencias_list:
                 tempo = int(s[s.index("T")+1:s.index("Z")])
                 escala = int(s[-1])
-                print(f"Time: {tempo}, Scale: {escala}")
                 self.server.data_bank.set_input_registers(180, [escala])
-                    
+                print(f"Time: {tempo}, Scale: {escala}")
+                
                 # Introduce a delay based on the time value
                 sleep(tempo/1000)
 
@@ -158,27 +164,39 @@ class HomeApp:
 
         # Configure o estilo das abas
         aba_style = ttk.Style()
-        aba_style.configure("TNotebook.Tab", background="lightblue", foreground="black", font=("Helvetica", 12), relief="raised", borderwidth=2, padx=10, pady=5)
+        aba_style.configure("TNotebook.Tab", background="lightblue", foreground="black", font=("Consolas", 12), relief="raised", borderwidth=2, padx=10, pady=5)
 
         self.criar_interface()
 
     def criar_interface(self):
-        # Botão "Criar código"
-        criar_codigo_botao = tk.Button(self.root, text="Criar código", command=self.ir_para_piano)
-        criar_codigo_botao.grid(row=0, column=0, padx=10, pady=10)
+        # Título da aba
+        titulo_label = tk.Label(self.root, text="Olá, eu sou o PianoBot!", font=("Consolas", 25, "bold"))
+        titulo_label.grid(row=0, column=0, padx=10, pady=10, columnspan=2)
 
-        # Botão "Carregar música"
-        carregar_musica_botao = tk.Button(self.root, text="Carregar música", command=self.ir_para_carregar_musica)
-        carregar_musica_botao.grid(row=1, column=0, padx=10, pady=10)
+        # Descrição da aba
+        descricao_label = tk.Label(self.root, text="Clique no botão e crie uma música para eu tocar", font=("Consolas", 16))
+        descricao_label.grid(row=1, column=0, padx=10, pady=5, columnspan=2)
+
+        # Botão "Criar código"
+        criar_codigo_botao = tk.Button(self.root, text="Criar música", command=self.ir_para_piano, font=("Consolas", 14, "bold"), bg="#BEE1EA", fg="grey")
+        criar_codigo_botao.grid(row=2, column=0, padx=300, pady=30)
+        criar_codigo_botao.config(width=20, height=2)
 
     def ir_para_piano(self):
         root = tk.Toplevel(self.root)
         app = PianoApp(root)
-
+"""
+        # Botão "Carregar música"
+        carregar_musica_botao = tk.Button(self.root, text="Carregar música", command=self.ir_para_carregar_musica)
+        carregar_musica_botao.grid(row=1, column=0, padx=10, pady=10)
+"""
+   
+"""
     def ir_para_carregar_musica(self):
         root = tk.Toplevel(self.root)
         app = CarregarMusicaApp(root)
-
+"""
+"""
 class CarregarMusicaApp:
     def __init__(self, root):
         self.root = root
@@ -220,6 +238,7 @@ class CarregarMusicaApp:
                     self.string_midi_label.config(text="String MIDI:\n" + midi_string)
             except Exception as e:
                 self.string_midi_label.config(text="Erro ao carregar o arquivo MIDI.")
+"""
 
 if __name__ == "__main__":
     root = tk.Tk()
