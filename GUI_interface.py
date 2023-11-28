@@ -19,6 +19,7 @@ class PianoApp:
         self.sequencias = []
         self.escalas = []
         self.i = 0
+        self.musica = ""
 
         # Carregando a imagem
         self.imagem = tk.PhotoImage(file="img/playbut.png")
@@ -34,68 +35,105 @@ class PianoApp:
         self.criar_interface()
 
     def criar_interface(self):
+        # Título
+        title = tk.Label(self.root, text="Crie uma música no teclado virtual", font=("Consolas", 14))
+        title.grid(row=0, column=0, columnspan=8, pady=5)
+
         # Criação de botões brancos (teclas)
         notas_brancas = ["C", "D", "E", "F", "G", "A", "B", "NADA"]  # Adicionei "NADA"
-        for nota in notas_brancas:
+        for i, nota in enumerate(notas_brancas):
             if nota == "NADA":
-                tecla = tk.Button(self.root, text=nota, command=lambda nota=nota: self.adicionar_tecla_pausa(), width=4, height=10, font=("Consolas", 10, "bold"))
+                tecla = tk.Button(self.root, text=nota, command=lambda nota=nota: self.adicionar_tecla_pausa(),
+                                width=4, height=10, font=("Consolas", 10, "bold"))
             else:
-                tecla = tk.Button(self.root, text="", command=lambda nota=nota: self.adicionar_tecla(nota), width=4, height=10, bg="white")
-            tecla.grid(row=0, column=notas_brancas.index(nota), padx=5, pady=5)
+                tecla = tk.Button(self.root, text="", command=lambda nota=nota: self.adicionar_tecla(nota),
+                                width=4, height=10, bg="white")
+            tecla.grid(row=1, column=i, padx=5, pady=5)
             self.teclas.append(tecla)
 
         # Criação de botões pretos (sustenidos)
         notas_pretas = ["J", "K", "L", "M", "N"]
-        i = 0
+        i=0
         for nota in notas_pretas:
-            tecla = tk.Button(self.root, text="", command=lambda nota=nota: self.adicionar_tecla(nota), bg="black", fg="white", width=2, height=6)
+            tecla = tk.Button(self.root, text="", command=lambda nota=nota: self.adicionar_tecla(nota),
+                            bg="black", fg="white", width=2, height=6)
             if nota in ["J", "K"]:
-                tecla.grid(row=0, column=i + 1, padx=5, pady=5)
+                tecla.grid(row=1, column=i + 1, padx=5, pady=5)
                 i += 1
             else:
                 i += 1
-                tecla.grid(row=0, column=i + 1, padx=5, pady=5)
+                tecla.grid(row=1, column=i + 1, padx=5, pady=5)
             self.teclas.append(tecla)
 
+        # Vazio
         vazio = tk.Label(self.root, text="")
-        vazio.grid(row=1, column=0, padx=10, pady=5, columnspan=4)
+        vazio.grid(row=2, column=0, columnspan=8, pady=5)
 
-        # Título "Digite o tempo" e "Digite a Escala (0:5)"
-        tempo_label = tk.Label(self.root, text="Digite o tempo", font=("Consolas", 10))
-        tempo_label.grid(row=2, column=4, padx=10, pady=5, columnspan=4)
-
-        escala_label = tk.Label(self.root, text="Digite a Escala (0:4)", font=("Consolas", 10))
-        escala_label.grid(row=2, column=0, padx=10, pady=5, columnspan=4)
+        # Títulos "Digite o tempo" e "Digite a Escala (0:5)"
+        escala_label = tk.Label(self.root, text="Escala (0:4)", font=("Consolas", 10))
+        escala_label.grid(row=3, column=0, columnspan=4, pady=5)
+        tempo_label = tk.Label(self.root, text="Tempo (ms)", font=("Consolas", 10))
+        tempo_label.grid(row=3, column=4, columnspan=4, pady=5)
 
         # Campos de entrada para o tempo e a escala
-        self.tempo_entry = tk.Entry(self.root)
-        self.tempo_entry.grid(row=3, column=4, padx=7, pady=5, columnspan=4)
-
         self.escala_entry = tk.Entry(self.root)
-        self.escala_entry.grid(row=3, column=0, padx=7, pady=5, columnspan=4)
+        self.escala_entry.grid(row=4, column=0, columnspan=4, pady=5)
+        self.tempo_entry = tk.Entry(self.root)
+        self.tempo_entry.grid(row=4, column=4, columnspan=4, pady=5)
 
         # Botão "Confirmar"
         confirmar_botao = tk.Button(self.root, text="Confirmar", command=self.armazenar_sequencia, font=("Consolas", 10))
-        confirmar_botao.grid(row=4, column=2, padx=10, pady=8, columnspan=4)
+        confirmar_botao.grid(row=5, column=2, columnspan=4, pady=8)
 
         # Criar um Label para exibir a imagem como botão
         play_button = tk.Label(self.root, image=self.imagem, bd=0, cursor="hand2")
-        play_button.bind("<Button-1>",self.enviar)
-        play_button.grid(row=5, column=2, padx=10, pady=10, columnspan=4)
+        play_button.bind("<Button-1>", self.enviar)
+        play_button.grid(row=6, column=2, columnspan=4, pady=10)
 
         # Título "Inserir música"
-        inserir_musica_label = tk.Label(self.root, text="Digitar música completa", font=("Consolas", 10))
-        inserir_musica_label.grid(row=7, column=0, padx=10, pady=5, columnspan=8)
+        inserir_musica_label = tk.Label(self.root, text="Ou digite uma música completa", font=("Consolas", 12))
+        inserir_musica_label.grid(row=7, column=0, columnspan=8, pady=5)
 
         # Campo de entrada para a música completa
         self.string_entry = tk.Entry(self.root)
-        self.string_entry.grid(row=8, column=0, padx=10, pady=5, columnspan=8)
+        self.string_entry.grid(row=8, column=0, columnspan=8, pady=5)
 
         # Botão "Limpar Sequência"
         limpar_botao = tk.Button(self.root, text="Limpar Sequência", command=self.limpar, font=("Consolas", 10))
-        limpar_botao.grid(row=9, column=2, padx=10, pady=10, columnspan=4)
+        limpar_botao.grid(row=9, column=2, columnspan=4, pady=10)
+
+        # Vazio
+        vazio2 = tk.Label(self.root, text="")
+        vazio2.grid(row=10, column=0, columnspan=8, pady=10)
+
+        # Título de músicas prontas
+        musicas_prontas = tk.Label(self.root, text="Ou selecione uma música pronta", font=("Consolas", 12))
+        musicas_prontas.grid(row=11, column=0, columnspan=8, pady=10)
+
+        # Músicas 1, 2 e 3
+        musica1 = tk.Label(self.root, text="Música 1", font=("Consolas", 10), bd=0, cursor="hand2")
+        musica1.bind("<Button-1>", self.musica1)
+        musica1.grid(row=12, column=0, columnspan=4, pady=10)
+
+        musica2 = tk.Label(self.root, text="Música 2", font=("Consolas", 10), bd=0, cursor="hand2")
+        musica2.bind("<Button-1>", self.musica2)
+        musica2.grid(row=12, column=2, columnspan=4, pady=10)
+
+        musica3 = tk.Label(self.root, text="Música 3", font=("Consolas", 10), bd=0, cursor="hand2")
+        musica3.bind("<Button-1>", self.musica3)
+        musica3.grid(row=12, column=4, columnspan=4, pady=10)
 
         self.root.mainloop()
+
+
+    def musica1(self, event):
+        self.musica = ""
+
+    def musica2(self, event):
+        self.musica = ""
+
+    def musica3(self, event):
+        self.musica = ""
 
     def limpar(self):
         self.sequencias = []
@@ -174,7 +212,7 @@ class HomeApp:
         titulo_label.grid(row=0, column=0, padx=10, pady=10, columnspan=2)
 
         # Descrição da aba
-        descricao_label = tk.Label(self.root, text="Clique no botão e crie uma música para eu tocar", font=("Consolas", 16))
+        descricao_label = tk.Label(self.root, text="Clique no botão e me ensine a tocar uma música", font=("Consolas", 16))
         descricao_label.grid(row=1, column=0, padx=10, pady=5, columnspan=2)
 
         # Botão "Criar código"
@@ -185,60 +223,6 @@ class HomeApp:
     def ir_para_piano(self):
         root = tk.Toplevel(self.root)
         app = PianoApp(root)
-"""
-        # Botão "Carregar música"
-        carregar_musica_botao = tk.Button(self.root, text="Carregar música", command=self.ir_para_carregar_musica)
-        carregar_musica_botao.grid(row=1, column=0, padx=10, pady=10)
-"""
-   
-"""
-    def ir_para_carregar_musica(self):
-        root = tk.Toplevel(self.root)
-        app = CarregarMusicaApp(root)
-"""
-"""
-class CarregarMusicaApp:
-    def __init__(self, root):
-        self.root = root
-        self.root.title("Carregar Música")
-
-        self.arquivo_midi = None
-        self.string_midi = None
-
-        self.criar_interface()
-
-    def criar_interface(self):
-        # Botão para carregar arquivo MIDI
-        carregar_arquivo_botao = tk.Button(self.root, text="Carregar Arquivo MIDI", command=self.carregar_arquivo_midi)
-        carregar_arquivo_botao.grid(row=0, column=0, padx=10, pady=10)
-
-        # Botão para converter arquivo MIDI em string
-        converter_string_botao = tk.Button(self.root, text="Converter em String", command=self.converter_em_string)
-        converter_string_botao.grid(row=1, column=0, padx=10, pady=10)
-
-        # Rótulo para exibir a string MIDI
-        self.string_midi_label = tk.Label(self.root, text="")
-        self.string_midi_label.grid(row=2, column=0, padx=10, pady=10)
-
-    def carregar_arquivo_midi(self):
-        # Abre uma janela de diálogo para selecionar o arquivo MIDI
-        arquivo_midi = filedialog.askopenfilename(filetypes=[("Arquivos MIDI", "*.mid")])
-
-        if arquivo_midi:
-            self.arquivo_midi = arquivo_midi
-
-    def converter_em_string(self):
-        if self.arquivo_midi:
-            try:
-                with open(self.arquivo_midi, 'rb') as arquivo:
-                    mensagens = mido.MidiFile(self.arquivo_midi)
-                    midi_string = "\n".join(str(mensagem) for mensagem in mensagens)
-
-                    self.string_midi = midi_string
-                    self.string_midi_label.config(text="String MIDI:\n" + midi_string)
-            except Exception as e:
-                self.string_midi_label.config(text="Erro ao carregar o arquivo MIDI.")
-"""
 
 if __name__ == "__main__":
     root = tk.Tk()
