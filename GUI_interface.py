@@ -111,15 +111,15 @@ class PianoApp:
         musicas_prontas.grid(row=11, column=0, columnspan=8, pady=10)
 
         # Músicas 1, 2 e 3
-        musica1 = tk.Label(self.root, text="Música 1", font=("Consolas", 10), bd=0, cursor="hand2")
+        musica1 = tk.Label(self.root, text="Come as u r", font=("Consolas", 10), bd=0, cursor="hand2")
         musica1.bind("<Button-1>", self.musica1)
         musica1.grid(row=12, column=0, columnspan=4, pady=10)
 
-        musica2 = tk.Label(self.root, text="Música 2", font=("Consolas", 10), bd=0, cursor="hand2")
+        musica2 = tk.Label(self.root, text="Industry Baby", font=("Consolas", 10), bd=0, cursor="hand2")
         musica2.bind("<Button-1>", self.musica2)
         musica2.grid(row=12, column=2, columnspan=4, pady=10)
 
-        musica3 = tk.Label(self.root, text="Música 3", font=("Consolas", 10), bd=0, cursor="hand2")
+        musica3 = tk.Label(self.root, text="Billie Jean", font=("Consolas", 10), bd=0, cursor="hand2")
         musica3.bind("<Button-1>", self.musica3)
         musica3.grid(row=12, column=4, columnspan=4, pady=10)
 
@@ -127,13 +127,13 @@ class PianoApp:
 
 
     def musica1(self, event):
-        self.musica = ""
-
+        self.musica = "SPT1000Z1|SET150Z1|SPT75Z1|SET150Z1|SPT75Z1|SFT150Z1|SPT75Z1|SLT400Z1|SPT50Z1|SAT150Z1|SPT50Z1|SLT150Z1|SPT50Z1|SAT150Z1|SPT50Z1|SLT150Z1|SPT50Z1|SLT150Z1|SPT50Z1|SFT150Z1|SPT50Z1|SET150Z1|SPT50Z1|SBT150Z1|SPT50Z1|SET150Z1|SPT50Z1|SET500Z1|SPT50Z1|SBT150Z1|SPT50Z1|SET150Z1|SPT75Z1|SFT150Z1|SPT75Z1|SLT400Z1"
+    
     def musica2(self, event):
-        self.musica = ""
+        self.musica = "SPT1000Z2|SKT100Z2|SPT200Z2|SFT100Z2|SPT200Z2|SLT100Z2|SPT100Z2|SNT100Z2|SPT100Z2|SMT100Z2|SPT100Z2|SLT600Z2|SPT100Z2|SMT100Z2|SPT200Z2|SLT100Z2|SPT200Z2|SFT600Z2|SPT200Z2|SFT100Z2|SPT100Z2|SFT100Z2|SPT100Z2|SFT100Z2|SPT100Z2|SFT100Z2|SPT100Z2|SLT100Z2|SPT200Z2|SFT100Z2|SPT200Z2|SKT600Z2|SPT200Z2"
 
     def musica3(self, event):
-        self.musica = ""
+        self.musica = "SPT1000Z1|SJLT300Z1|SPT500Z1|SKMT300Z1|SPT900Z1|SJEAT300Z1|SPT500Z1|SKMT300Z1|SPT200Z1|SPT800Z2|SJLT300Z2|SPT500Z2|SKMT300Z2|SPT900Z2|SJEAT300Z2|SPT500Z2|SKMT300Z2|SPT200Z2|SPT800Z1|SJLT300Z1|SPT500Z1|SKMT300Z1|SPT900Z1|SJEAT300Z1|SPT500Z1|SKMT300Z1"
 
     def limpar(self):
         self.sequencias = []
@@ -150,8 +150,13 @@ class PianoApp:
         try:
             # UR
             if self.string_entry.get() != "":
-                sequencias_list = self.string_entry.get().split("|")
+                sequencias_list = (self.string_entry.get()).split("|")
                 sequencias_string = self.string_entry.get()
+
+            elif self.musica != "":
+                sequencias_list = self.musica.split("|")
+                sequencias_string = self.musica
+
             else:
                 sequencias_list = self.sequencias
                 sequencias_string = "|".join(self.sequencias)
@@ -161,10 +166,10 @@ class PianoApp:
             self.server.data_bank.set_input_registers(180, [int((sequencias_list[0])[-1])])
 
             print("Start UR5")
-            sleep(3)
+            sleep(5)
 
             self.arduino.write(sequencias_string.encode())
-            print("Data sent to Arduino:", sequencias_string)
+            #print("Data sent to Arduino:", sequencias_string)
 
             sleep(1) # sincronização da comunicação
             for s in sequencias_list:
