@@ -223,12 +223,13 @@ class PianoApp:
 
             # Inicializa e referencia UR5
             self.server.data_bank.set_input_registers(180, [int((sequencias_list[0])[-1])]) # ir para primeira escala da música
+            #print(f"escala inicial: {int((sequencias_list[0])[-1])}")
             self.server.data_bank.set_input_registers(181, [1]) # start
             sleep(3)
 
             # Enviar música para o arduino
             self.arduino.write(musica_arduino.encode())
-            #print("Data sent to Arduino:", sequencias_string)
+            #print("Data sent to Arduino:", musica_arduino)
 
             sleep(1) # sincronização da comunicação (timeout = 1s)
 
@@ -240,7 +241,7 @@ class PianoApp:
 
                 # Envia a escala
                 self.server.data_bank.set_input_registers(180, [escala])
-                # print(f"Time: {tempo}, Scale: {escala}")
+                #print(f"Tempo: {tempo}, Escala: {escala}")
                 
                 # Aguarda o tempo do acorde/pausa
                 sleep(tempo)
