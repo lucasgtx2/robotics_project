@@ -265,7 +265,7 @@ class PianoApp:
         tempo = self.tempo_entry.get()
         escala = self.escala_entry.get()
 
-        # Cria acorde no protocolo S___T___Z_
+        # Cria acorde no protocolo criado pela equipe
         if sequencia and tempo and escala:
             sequencia_completa = f"{sequencia}T{tempo}{escala}"
             self.sequencias.append(sequencia_completa)
