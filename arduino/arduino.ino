@@ -30,7 +30,7 @@ void loop() {
   for(int i = 0; i < chordsList.size(); i++){
     String chord = chordsList.get(i);
     String notes = chord.substring(0, chord.indexOf("T"));
-    unsigned int time = chord.substring(chord.indexOf("T") + 1, chord.length() - 1).toInt();
+    unsigned int time = chord.substring(chord.indexOf("T") + 1, chord.length()).toInt();
   
     // Activate solenoids
     if (notes.charAt(0) != 'P') {
