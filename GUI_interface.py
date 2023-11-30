@@ -74,10 +74,7 @@ class PianoApp:
         self.teclas = []
         self.tecla_atual = ""
         self.sequencias = []
-        self.i = 0
         self.musica = ""
-        self.musica_arduino = ""
-        self.musica_arduino_list = []
 
         # Carregando a imagem de "play"
         self.imagem = tk.PhotoImage(file="img/playbut.png")
@@ -109,16 +106,16 @@ class PianoApp:
 
         # Criação de botões pretos (sustenidos)
         notas_pretas = ["J", "K", "L", "M", "N"]
-        i=0
+        t=0
         for nota in notas_pretas:
             tecla = tk.Button(self.root, text="", command=lambda nota=nota: self.adicionar_tecla(nota),
                             bg="black", fg="white", width=2, height=6)
             if nota in ["J", "K"]:
-                tecla.grid(row=1, column=i + 1, padx=5, pady=5)
-                i += 1
+                tecla.grid(row=1, column=t + 1, padx=5, pady=5)
+                t += 1
             else:
-                i += 1
-                tecla.grid(row=1, column=i + 1, padx=5, pady=5)
+                t += 1
+                tecla.grid(row=1, column=t + 1, padx=5, pady=5)
             self.teclas.append(tecla)
 
         # Espaço vazio
