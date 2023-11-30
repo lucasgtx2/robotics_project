@@ -19,7 +19,6 @@ from tkinter import ttk
 import serial
 # Comunicação ModBus com UR5
 from pyModbusTCP.server import ModbusServer
-
 # Outras
 from time import sleep
 

@@ -3,8 +3,9 @@
 #include <LinkedList.h>
 
 // Global variables
-String musica;
+String song;
 
+// Functions
 int mapCharToConstant(char note);
 void splitStringAndAppendToList(const String &inputString, char separator, LinkedList<String> &outputList);
 
@@ -19,34 +20,26 @@ void setup() {
 
 void loop() {
   //while (!Serial.available());
-  musica = Serial.readString();
+  song = Serial.readString();
 
-  LinkedList<String> resultList;
+  LinkedList<String> chordsList;
 
   // Split the string and append to the list
-  splitStringAndAppendToList(musica, '|', resultList);
+  splitStringAndAppendToList(song, '|', chordsList);
 
-  // Print the result
-  Serial.println("Result List:");
-  for (int i = 0; i < resultList.size(); i++) {
-    Serial.println(resultList.get(i));
-  }
-
-  for(int i = 0; i < resultList.size(); i++){
-    String chord = resultList.get(i);
+  for(int i = 0; i < chordsList.size(); i++){
+    String chord = chordsList.get(i);
     String notes = chord.substring(chord.indexOf("S") + 1, chord.indexOf("T"));
-    unsigned long tempo = chord.substring(chord.indexOf("T") + 1, chord.indexOf("Z")).toInt();
+    unsigned int time = chord.substring(chord.indexOf("T") + 1, chord.indexOf("Z")).toInt();
   
     // Activate solenoids
     if (notes.charAt(0) != 'P') {
       for (int j = 0; j < notes.length(); j++) {
         int mappedValue = mapCharToConstant(notes.charAt(j));
         digitalWrite(mappedValue, HIGH); // Activate solenoid
-        Serial.println(mappedValue);
       }
   
-      delay(tempo);
-      Serial.println(tempo);
+      delay(time);
   
       // Turn off solenoids
       for (int j = 0; j < notes.length(); j++) {
@@ -54,10 +47,10 @@ void loop() {
         digitalWrite(mappedValue, LOW); // Turn off solenoid
       }
     } else {
-      delay(tempo);
+      delay(time);
     }
   }
-  delay(5);
+  delay(1);
 }
 
 // Function to map a character to a constant integer
