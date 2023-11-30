@@ -224,8 +224,8 @@ class PianoApp:
 
             # Inicializa e referencia UR5
             self.server.data_bank.set_input_registers(181, [1]) # start
+            sleep(1)
             self.server.data_bank.set_input_registers(180, [int((sequencias_list[0])[-1])]) # ir para primeira escala da música
-
             sleep(3)
 
             # Enviar música para o arduino
@@ -247,7 +247,7 @@ class PianoApp:
                 # Aguarda o tempo do acorde/pausa
                 sleep(tempo)
 
-            print("fim")
+            #print("fim")
 
             # Start = 0 (para o robô)
             self.server.data_bank.set_input_registers(181, [0])
