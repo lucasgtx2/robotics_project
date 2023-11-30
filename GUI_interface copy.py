@@ -7,7 +7,7 @@ Insper 2023/2
 
 Criadores:
 Lucas Gabriel Mocellin Teixeira
-Andressa Silva de OLiveira
+Andressa Silva de Oliveira
 Gabriella Kowarick Zullo
 Guilherme Ricchetti Carvalho
 """
@@ -74,6 +74,7 @@ class PianoApp:
         self.teclas = []
         self.tecla_atual = ""
         self.sequencias = []
+        self.escalas = []
         self.i = 0
         self.musica = ""
         self.musica_arduino = ""
@@ -194,8 +195,8 @@ class PianoApp:
     # Função para limpar sequência digitada
     def limpar(self):
         self.sequencias = []
+        self.escalas = []
         self.string_entry.delete('0', 'end')
-        self.musica = ""
 
     # Funções de adicionar tecla
     def adicionar_tecla(self, nota):
@@ -228,8 +229,9 @@ class PianoApp:
             musica_arduino = "|".join(musica_arduino_list)
 
             # Inicializa e referencia UR5
-            self.server.data_bank.set_input_registers(180, [int((sequencias_list[0])[-1])]) # ir para primeira escala da música
             self.server.data_bank.set_input_registers(181, [1]) # start
+            sleep(1)
+            self.server.data_bank.set_input_registers(180, [int((sequencias_list[0])[-1])]) # ir para primeira escala da música
             sleep(3)
 
             # Enviar música para o arduino
@@ -241,7 +243,7 @@ class PianoApp:
             # Loop de comunicação modbus com UR5
             for s in sequencias_list:
                 # Extrai o tempo e a escala do acorde/pausa
-                tempo = (int(s[s.index("T")+1:-1]))/1000
+                tempo = (int(s[s.index("T")+1:s.index("Z")]))/1000
                 escala = int(s[-1])
 
                 # Envia a escala
@@ -267,8 +269,10 @@ class PianoApp:
 
         # Cria acorde no protocolo S___T___Z_
         if sequencia and tempo and escala:
-            sequencia_completa = f"{sequencia}T{tempo}{escala}"
+            sequencia_completa = f"S{sequencia}T{tempo}Z{escala}"
+            escala_completa = f"T{tempo}Z{escala}"
             self.sequencias.append(sequencia_completa)
+            self.escalas.append(escala_completa)
             self.tecla_atual = ""
 
             # Conferência
