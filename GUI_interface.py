@@ -176,30 +176,27 @@ class PianoApp:
 
         self.root.mainloop()
 
-    # Come as you are - Nirvana
-    def musica1(self, event):
-        self.musica = "PT10001|ET1501|PT751|ET1501|PT751|FT1501|PT751|LT4001|PT501|AT1501|PT501|LT1501|PT501|AT1501|PT501|LT1501|PT501|LT1501|PT501|FT1501|PT501|ET1501|PT501|BT1501|PT501|ET1501|PT501|ET5001|PT501|BT1501|PT501|ET1501|PT751|FT1501|PT751|LT4001"
-    
-    # Industry Baby
-    def musica2(self, event):
-        self.musica = "PT10002|KT1002|PT2002|FT1002|PT2002|LT1002|PT1002|NT1002|PT1002|MT1002|PT1002|LT6002|PT1002|MT1002|PT2002|LT1002|PT2002|FT6002|PT2002|FT1002|PT1002|FT1002|PT1002|FT1002|PT1002|FT1002|PT1002|LT1002|PT2002|FT1002|PT2002|KT6002|PT2002"
-
-    # Billie Jean - Michael Jackson
-    def musica3(self, event):
-        self.musica = "PT10002|KT1002|PT2002|FT1002|PT2002|LT1002|PT1002|NT1002|PT1002|MT1002|PT1002|LT6002|PT1002|MT1002|PT2002|LT1002|PT2002|FT6002|PT2002|FT1002|PT1002|FT1002|PT1002|FT1002|PT1002|FT1002|PT1002|LT1002|PT2002|FT1002|PT2002|KT6002|PT2002PT10001|JLT3001|PT5001|KMT3001|PT9001|JEAT3001|PT5001|KMT3001|PT2001|PT8002|JLT3002|PT5002|KMT3002|PT9002|JEAT3002|PT5002|KMT3002|PT2002|PT8001|JLT3001|PT5001|KMT3001|PT9001|JEAT3001|PT5001|KMT3001"
-
-    # Função para limpar sequência digitada
-    def limpar(self):
-        self.sequencias = []
-        self.string_entry.delete('0', 'end')
-        self.musica = ""
-
     # Funções de adicionar tecla
     def adicionar_tecla(self, nota):
         self.tecla_atual += f"{nota}"
-
     def adicionar_tecla_pausa(self):
         self.tecla_atual += f"P"
+
+    # Função que armazena a sequência da música criada no teclado virtual
+    def armazenar_sequencia(self):
+        sequencia = self.tecla_atual.strip()
+        tempo = self.tempo_entry.get()
+        escala = self.escala_entry.get()
+
+        # Cria acorde no protocolo criado pela equipe
+        if sequencia and tempo and escala:
+            sequencia_completa = f"{sequencia}T{tempo}{escala}"
+            self.sequencias.append(sequencia_completa)
+            self.tecla_atual = ""
+
+            # Conferência
+            print("Sequência armazenada:", sequencia_completa)
+            print("Todas as sequências:", self.sequencias)
 
     # Função que sincroniza o envio de dados via serial e modbus
     def enviar(self,event):
@@ -255,22 +252,24 @@ class PianoApp:
 
         except Exception as e:
             print(str(e))
+    
+    # Come as you are - Nirvana
+    def musica1(self, event):
+        self.musica = "PT10001|ET1501|PT751|ET1501|PT751|FT1501|PT751|LT4001|PT501|AT1501|PT501|LT1501|PT501|AT1501|PT501|LT1501|PT501|LT1501|PT501|FT1501|PT501|ET1501|PT501|BT1501|PT501|ET1501|PT501|ET5001|PT501|BT1501|PT501|ET1501|PT751|FT1501|PT751|LT4001"
+    
+    # Industry Baby
+    def musica2(self, event):
+        self.musica = "PT10002|KT1002|PT2002|FT1002|PT2002|LT1002|PT1002|NT1002|PT1002|MT1002|PT1002|LT6002|PT1002|MT1002|PT2002|LT1002|PT2002|FT6002|PT2002|FT1002|PT1002|FT1002|PT1002|FT1002|PT1002|FT1002|PT1002|LT1002|PT2002|FT1002|PT2002|KT6002|PT2002"
 
-    # Função que armazena a sequência da música criada no teclado virtual
-    def armazenar_sequencia(self):
-        sequencia = self.tecla_atual.strip()
-        tempo = self.tempo_entry.get()
-        escala = self.escala_entry.get()
+    # Billie Jean - Michael Jackson
+    def musica3(self, event):
+        self.musica = "PT10002|KT1002|PT2002|FT1002|PT2002|LT1002|PT1002|NT1002|PT1002|MT1002|PT1002|LT6002|PT1002|MT1002|PT2002|LT1002|PT2002|FT6002|PT2002|FT1002|PT1002|FT1002|PT1002|FT1002|PT1002|FT1002|PT1002|LT1002|PT2002|FT1002|PT2002|KT6002|PT2002PT10001|JLT3001|PT5001|KMT3001|PT9001|JEAT3001|PT5001|KMT3001|PT2001|PT8002|JLT3002|PT5002|KMT3002|PT9002|JEAT3002|PT5002|KMT3002|PT2002|PT8001|JLT3001|PT5001|KMT3001|PT9001|JEAT3001|PT5001|KMT3001"
 
-        # Cria acorde no protocolo criado pela equipe
-        if sequencia and tempo and escala:
-            sequencia_completa = f"{sequencia}T{tempo}{escala}"
-            self.sequencias.append(sequencia_completa)
-            self.tecla_atual = ""
-
-            # Conferência
-            print("Sequência armazenada:", sequencia_completa)
-            print("Todas as sequências:", self.sequencias)
+    # Função para limpar dados
+    def limpar(self):
+        self.sequencias = []
+        self.string_entry.delete('0', 'end')
+        self.musica = ""
 
 
 if __name__ == "__main__":
