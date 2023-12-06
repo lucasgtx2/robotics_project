@@ -178,15 +178,15 @@ class PianoApp:
 
     # Come as you are - Nirvana
     def musica1(self, event):
-        self.musica = "ET1501|PT751|ET1501|PT751|FT1501|PT751|LT4001|PT501|AT1501|PT501|LT1501|PT501|AT1501|PT501|LT1501|PT501|LT1501|PT501|FT1501|PT501|ET1501|PT501|BT1501|PT501|ET1501|PT501|ET5001|PT501|BT1501|PT501|ET1501|PT751|FT1501|PT751|LT4001|PT501|AT1501|PT501|LT1501|PT501|AT1501|PT501|LT1501|PT501|LT1501|PT501|FT1501|PT501|ET1501|PT501|BT1501|PT501|ET1501|PT501|ET5001|PT501|BT1501|PT501|ET1501|PT751|FT1501|PT751|LT4001"
+        self.musica = "PT10001|ET1501|PT751|ET1501|PT751|FT1501|PT751|LT4001|PT501|AT1501|PT501|LT1501|PT501|AT1501|PT501|LT1501|PT501|LT1501|PT501|FT1501|PT501|ET1501|PT501|BT1501|PT501|ET1501|PT501|ET5001|PT501|BT1501|PT501|ET1501|PT751|FT1501|PT751|LT4001|PT501|AT1501|PT501|LT1501|PT501|AT1501|PT501|LT1501|PT501|LT1501|PT501|FT1501|PT501|ET1501|PT501|BT1501|PT501|ET1501|PT501|ET5001|PT501|BT1501|PT501|ET1501|PT751|FT1501|PT751|LT4001"
     
     # Industry Baby
     def musica2(self, event):
-        self.musica = "KT1002|PT2002|FT1002|PT2002|LT1002|PT1002|NT1002|PT1002|MT1002|PT1002|LT6002|PT1002|MT1002|PT1002|LT1002|PT1002|FT6002|PT1002|FT1002|PT1002|FT1002|PT1002|FT1002|PT1002|FT1002|PT1002|LT1002|PT1002|FT1002|PT1002|KT6002|PT6002|KT1002|PT2002|FT1002|PT2002|LT1002|PT1002|NT1002|PT1002|MT1002|PT1002|LT6002|PT1002|MT1002|PT1002|LT1002|PT1002|FT6002|PT1002|FT1002|PT1002|FT1002|PT1002|FT1002|PT1002|FT1002|PT1002|LT1002|PT1002|FT1002|PT1002|KT6002"
+        self.musica = "PT10002|KT1002|PT2002|FT1002|PT2002|LT1002|PT1002|NT1002|PT1002|MT1002|PT1002|LT6002|PT1002|MT1002|PT1002|LT1002|PT1002|FT6002|PT1002|FT1002|PT1002|FT1002|PT1002|FT1002|PT1002|FT1002|PT1002|LT1002|PT1002|FT1002|PT1002|KT6002|PT6002|KT1002|PT2002|FT1002|PT2002|LT1002|PT1002|NT1002|PT1002|MT1002|PT1002|LT6002|PT1002|MT1002|PT1002|LT1002|PT1002|FT6002|PT1002|FT1002|PT1002|FT1002|PT1002|FT1002|PT1002|FT1002|PT1002|LT1002|PT1002|FT1002|PT1002|KT6002"
 
     # Billie Jean - Michael Jackson
     def musica3(self, event):
-        self.musica = "JLT3001|PT5001|KMT3001|PT9001|JEAT3001|PT5001|KMT3001|PT2001|PT8002|JLT3002|PT5002|KMT3002|PT9002|JEAT3002|PT5002|KMT3002|PT2002|PT9001|JLT3001|PT5001|KMT3001|PT9001|JEAT3001|PT5001|KMT3001"
+        self.musica = "PT10001|JLT3001|PT5001|KMT3001|PT9001|JEAT3001|PT5001|KMT3001|PT2001|PT8002|JLT3002|PT5002|KMT3002|PT9002|JEAT3002|PT5002|KMT3002|PT2002|PT9001|JLT3001|PT5001|KMT3001|PT9001|JEAT3001|PT5001|KMT3001"
 
     # Função para limpar sequência digitada
     def limpar(self):
@@ -231,39 +231,16 @@ class PianoApp:
 
             # Se criou com o teclado virtual
             else:
-                sequencias_list = self.sequencias
-
-            # Confere se há pausa suficiente entre mudança de escala, caso contrário adiciona
-            musica = []
-            escala_anterior = None
-
-            for i, s in enumerate(sequencias_list):
-                escala_atual = int(s[-1])
-                
-                if i != 0 and escala_anterior != escala_atual:
-                    if s[0] != "P" or int(s[s.index("T") + 1:-1]) < 900 * abs((escala_atual - escala_anterior)): 
-                        musica.extend([f"PT25{escala_anterior}", f"PT{900 * abs((escala_atual - escala_anterior))}{escala_atual}"])
-
-                    elif musica[i-1][0] != "P":
-                        musica.extend([f"PT25{escala_anterior}", s])
-
-                    else:
-                        musica.append(s)
-
-                else:
-                    musica.append(s)
-                escala_anterior = escala_atual
-
-            #print(musica)
+                sequencias_list = self.sequencias            
 
             # Prepara string a ser enviada para o arduino
             musica_arduino_list = []
-            for s in musica:
+            for s in sequencias_list:
                 musica_arduino_list.append(s[:-1])
             musica_arduino = "|".join(musica_arduino_list)
 
             # Inicializa e referencia UR5
-            self.server.data_bank.set_input_registers(180, [int((musica[0])[-1])]) # ir para primeira escala da música
+            self.server.data_bank.set_input_registers(180, [int((sequencias_list[0])[-1])]) # ir para primeira escala da música
             #print(f"escala inicial: {int((sequencias_list[0])[-1])}")
             self.server.data_bank.set_input_registers(181, [1]) # start
             sleep(3)
@@ -275,7 +252,7 @@ class PianoApp:
             sleep(1) # sincronização da comunicação (timeout = 1s)
 
             # Loop de comunicação modbus com UR5
-            for s in musica:
+            for s in sequencias_list:
                 # Extrai o tempo e a escala do acorde/pausa
                 tempo = (int(s[s.index("T")+1:-1]))/1000
                 escala = int(s[-1])
@@ -295,24 +272,6 @@ class PianoApp:
         except Exception as e:
             print(str(e))
     
-    # Come as you are - Nirvana
-    def musica1(self, event):
-        self.musica = "PT10001|ET1501|PT751|ET1501|PT751|FT1501|PT751|LT4001|PT501|AT1501|PT501|LT1501|PT501|AT1501|PT501|LT1501|PT501|LT1501|PT501|FT1501|PT501|ET1501|PT501|BT1501|PT501|ET1501|PT501|ET5001|PT501|BT1501|PT501|ET1501|PT751|FT1501|PT751|LT4001"
-    
-    # Industry Baby
-    def musica2(self, event):
-        self.musica = "PT10002|KT1002|PT2002|FT1002|PT2002|LT1002|PT1002|NT1002|PT1002|MT1002|PT1002|LT6002|PT1002|MT1002|PT2002|LT1002|PT2002|FT6002|PT2002|FT1002|PT1002|FT1002|PT1002|FT1002|PT1002|FT1002|PT1002|LT1002|PT2002|FT1002|PT2002|KT6002|PT2002"
-
-    # Billie Jean - Michael Jackson
-    def musica3(self, event):
-        self.musica = "PT10002|KT1002|PT2002|FT1002|PT2002|LT1002|PT1002|NT1002|PT1002|MT1002|PT1002|LT6002|PT1002|MT1002|PT2002|LT1002|PT2002|FT6002|PT2002|FT1002|PT1002|FT1002|PT1002|FT1002|PT1002|FT1002|PT1002|LT1002|PT2002|FT1002|PT2002|KT6002|PT2002PT10001|JLT3001|PT5001|KMT3001|PT9001|JEAT3001|PT5001|KMT3001|PT2001|PT8002|JLT3002|PT5002|KMT3002|PT9002|JEAT3002|PT5002|KMT3002|PT2002|PT8001|JLT3001|PT5001|KMT3001|PT9001|JEAT3001|PT5001|KMT3001"
-
-    # Função para limpar dados
-    def limpar(self):
-        self.sequencias = []
-        self.string_entry.delete('0', 'end')
-        self.musica = ""
-
 
 if __name__ == "__main__":
     root = tk.Tk()
